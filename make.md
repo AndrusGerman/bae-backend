@@ -1,0 +1,1 @@
+go build -o .\bin\app.exe .\cmd\http\app.go;.\bin\app.exe
