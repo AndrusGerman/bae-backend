@@ -2,6 +2,7 @@ package http
 
 import (
 	"bae-backend/internal/adapter/config"
+	"bae-backend/internal/adapter/handler/http/huser"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -15,7 +16,7 @@ type Router struct {
 // NewRouter creates a new HTTP router
 func NewRouter(
 	config *config.HTTP,
-	userHandler *UserHandler,
+	userHandler *huser.UserHandler,
 ) (*Router, error) {
 	// CORS
 

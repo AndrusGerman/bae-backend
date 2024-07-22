@@ -2,6 +2,7 @@ package domain
 
 import (
 	"errors"
+	"net/http"
 )
 
 var (
@@ -11,3 +12,8 @@ var (
 	// ErrInternal is not implement
 	ErrNotImplement = errors.New("err not implement")
 )
+
+var ErrorStatusMap = map[error]int{
+	ErrInternal:     http.StatusInternalServerError,
+	ErrNotImplement: http.StatusNotFound,
+}

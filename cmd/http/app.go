@@ -3,6 +3,7 @@ package main
 import (
 	"bae-backend/internal/adapter/config"
 	"bae-backend/internal/adapter/handler/http"
+	"bae-backend/internal/adapter/handler/http/huser"
 	"bae-backend/internal/adapter/storage/mongodb"
 	"bae-backend/internal/adapter/storage/mongodb/repository"
 	"bae-backend/internal/core/service"
@@ -31,7 +32,7 @@ func main() {
 	// User
 	userRepo := repository.NewUserRepository(db)
 	userService := service.NewUserService(userRepo)
-	userHandler := http.NewUserHandler(userService)
+	userHandler := huser.NewUserHandler(userService)
 
 	// Init router
 	router, err := http.NewRouter(
