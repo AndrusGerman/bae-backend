@@ -1,11 +1,4 @@
-package util
-
-import (
-	"bae-backend/internal/core/domain"
-	"net/http"
-
-	"github.com/gin-gonic/gin"
-)
+package baehttp
 
 // response represents a response body format
 type response struct {
@@ -35,22 +28,4 @@ func newErrorResponse(errMsgs []string) errorResponse {
 		Success:  false,
 		Messages: errMsgs,
 	}
-}
-
-// HandleSuccess sends a success response with the specified status code and optional data
-func HandleSuccess(ctx *gin.Context, data any) {
-	rsp := newResponse(true, "Success", data)
-	ctx.JSON(http.StatusOK, rsp)
-}
-
-// HandleError send error response
-func HandleError(ctx *gin.Context, err error) {
-	statusCode, ok := domain.ErrorStatusMap[err]
-	if !ok {
-		statusCode = http.StatusInternalServerError
-	}
-
-	errMsg := err.Error()
-	errRsp := newErrorResponse([]string{errMsg})
-	ctx.JSON(statusCode, errRsp)
 }

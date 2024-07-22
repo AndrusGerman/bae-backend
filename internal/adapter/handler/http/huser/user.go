@@ -1,11 +1,9 @@
 package huser
 
 import (
+	"bae-backend/internal/baehttp"
 	"bae-backend/internal/core/domain"
 	"bae-backend/internal/core/port"
-	"bae-backend/internal/core/util"
-
-	"github.com/gin-gonic/gin"
 )
 
 // UserHandler represents the HTTP handler for user-related requests
@@ -28,9 +26,9 @@ type registerRequest struct {
 }
 
 // @Router			/users [post]
-func (uh *UserHandler) Register(ctx *gin.Context) {
+func (uh *UserHandler) Register(ctx *baehttp.Context) {
 	var req registerRequest
-	if err := ctx.ShouldBindJSON(&req); err != nil {
+	if err := ctx.BindJSON(&req); err != nil {
 		return
 	}
 
@@ -42,9 +40,9 @@ func (uh *UserHandler) Register(ctx *gin.Context) {
 
 	rsp, err := uh.svc.Register(&user)
 	if err != nil {
-		util.HandleError(ctx, err)
+		ctx.HandleError(err)
 		return
 	}
 
-	util.HandleSuccess(ctx, rsp)
+	ctx.HandleSuccess(rsp)
 }

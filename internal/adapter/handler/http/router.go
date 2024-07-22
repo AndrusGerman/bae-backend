@@ -3,29 +3,24 @@ package http
 import (
 	"bae-backend/internal/adapter/config"
 	"bae-backend/internal/adapter/handler/http/huser"
-
-	"github.com/gin-contrib/cors"
-	"github.com/gin-gonic/gin"
+	"bae-backend/internal/baehttp"
+	"bae-backend/internal/core/domain"
 )
-
-// Router is a wrapper for HTTP router
-type Router struct {
-	*gin.Engine
-}
 
 // NewRouter creates a new HTTP router
 func NewRouter(
 	config *config.HTTP,
 	userHandler *huser.UserHandler,
-) (*Router, error) {
+) (*baehttp.Bae, error) {
 	// CORS
 
-	router := gin.New()
-	var configCors = cors.DefaultConfig()
-	configCors.AllowAllOrigins = true
-	router.Use(gin.Recovery(), cors.New(configCors))
+	var coreBae = baehttp.NewBae().
+		// add default middleware
+		Use(&baehttp.CorsConfig{AllowAllOrigins: true}, &baehttp.Recovery{}).
+		// add status map erros
+		ErrorStatusMap(domain.ErrorStatusMap)
 
-	v1 := router.Group("/v1")
+	v1 := coreBae.Group("/v1")
 	{
 		user := v1.Group("/users")
 		{
@@ -42,12 +37,5 @@ func NewRouter(
 
 	}
 
-	return &Router{
-		router,
-	}, nil
-}
-
-// Serve starts the HTTP server
-func (r *Router) Serve(listenAddr string) error {
-	return r.Run(listenAddr)
+	return coreBae, nil
 }
