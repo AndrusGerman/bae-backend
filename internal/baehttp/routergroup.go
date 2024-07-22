@@ -24,3 +24,7 @@ func (rg *RouterGroup) Group(relativePath string, handlers ...HandlerFunc) *Rout
 func (rg *RouterGroup) POST(relativePath string, handlers ...HandlerFunc) {
 	rg.ginRouterGroup.POST(relativePath, baeHandlersToGin(rg.baeHttp, handlers...)...)
 }
+
+func (rg *RouterGroup) GET(relativePath string, handlers ...HandlerFunc) {
+	rg.ginRouterGroup.GET(relativePath, baeHandlersToGin(rg.baeHttp, handlers...)...)
+}

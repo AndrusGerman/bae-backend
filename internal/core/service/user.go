@@ -25,3 +25,8 @@ func (us *UserService) Register(user *domain.User) (*domain.User, error) {
 	// validate data
 	return us.repo.CreateUser(user)
 }
+
+func (us *UserService) GetAll() ([]domain.User, error) {
+	// validate data
+	return us.repo.GetAll()
+}

@@ -40,3 +40,11 @@ func (c *Collection) FindOne(filter interface{}, output any) error {
 	var result = c.mongoCollection.FindOne(context.TODO(), filter)
 	return result.Decode(output)
 }
+
+func (c *Collection) FindMany(filter interface{}, output any) error {
+	var cur, err = c.mongoCollection.Find(context.TODO(), filter)
+	if err != nil {
+		return err
+	}
+	return cur.All(context.TODO(), output)
+}

@@ -20,13 +20,8 @@ func (baeHttp *Bae) ErrorStatusMap(errorStatusMap map[error]int) *Bae {
 	return baeHttp
 }
 
-func (baeHttp *Bae) Use(middleware ...Middleware) *Bae {
-
-	var middlewareGin []gin.HandlerFunc = make([]gin.HandlerFunc, len(middleware))
-	for i := range middleware {
-		middlewareGin[i] = baeToGinHandler(baeHttp, middleware[i].Handler())
-	}
-	baeHttp.core.Use(middlewareGin...)
+func (baeHttp *Bae) Use(middleware ...HandlerFunc) *Bae {
+	baeHttp.core.Use(baeHandlersToGin(baeHttp, middleware...)...)
 	return baeHttp
 }
 

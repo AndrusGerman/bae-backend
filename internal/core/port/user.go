@@ -19,6 +19,9 @@ type UserRepository interface {
 	//UpdateUser(user *domain.User) (*domain.User, error)
 	// DeleteUser deletes a user
 	//DeleteUser(id uint64) error
+
+	// GetAll get all users
+	GetAll() ([]domain.User, error)
 }
 
 // UserService is an interface for interacting with user-related business logic
@@ -31,4 +34,7 @@ type UserService interface {
 	//UpdateUser(user *domain.User) (*domain.User, error)
 	// DeleteUser deletes a user
 	//DeleteUser(id uint64) error
+
+	// GetAll get all users
+	GetAll() ([]domain.User, error)
 }

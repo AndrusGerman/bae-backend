@@ -16,7 +16,10 @@ func NewRouter(
 
 	var coreBae = baehttp.NewBae().
 		// add default middleware
-		Use(&baehttp.CorsConfig{AllowAllOrigins: true}, &baehttp.Recovery{}).
+		Use(
+			baehttp.Cors(baehttp.CorsConfig{AllowAllOrigins: true}),
+			baehttp.Recovery(),
+		).
 		// add status map erros
 		ErrorStatusMap(domain.ErrorStatusMap)
 
@@ -24,6 +27,7 @@ func NewRouter(
 	{
 		user := v1.Group("/users")
 		{
+			user.GET("/", userHandler.All)
 			user.POST("/", userHandler.Register)
 			// user.POST("/login", authHandler.Login)
 

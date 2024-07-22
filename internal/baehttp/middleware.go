@@ -5,25 +5,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type Middleware interface {
-	Handler() HandlerFunc
-}
-
 // Cors
 type CorsConfig struct {
 	AllowAllOrigins bool
 }
 
-func (ctx *CorsConfig) Handler() HandlerFunc {
+func Cors(config CorsConfig) HandlerFunc {
 	var configCors = cors.DefaultConfig()
-	configCors.AllowAllOrigins = ctx.AllowAllOrigins
+	configCors.AllowAllOrigins = config.AllowAllOrigins
 	return ginToBaeHandler(cors.New(configCors))
 }
 
-// Recovery
-type Recovery struct {
-}
-
-func (ctx *Recovery) Handler() HandlerFunc {
+func Recovery() HandlerFunc {
 	return ginToBaeHandler(gin.Recovery())
 }

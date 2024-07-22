@@ -3,6 +3,8 @@ package repository
 import (
 	"bae-backend/internal/adapter/storage/mongodb"
 	"bae-backend/internal/core/domain"
+
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 /**
@@ -52,4 +54,13 @@ func (ur *UserRepository) UpdateUser(user *domain.User) (*domain.User, error) {
 func (ur *UserRepository) DeleteUser(id domain.Id) error {
 
 	return nil
+}
+
+func (ur *UserRepository) GetAll() ([]domain.User, error) {
+	var users = new([]domain.User)
+	var err = ur.collection.FindMany(bson.M{}, users)
+	if err != nil {
+		return nil, err
+	}
+	return *users, nil
 }

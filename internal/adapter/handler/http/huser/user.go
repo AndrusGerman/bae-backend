@@ -25,20 +25,25 @@ type registerRequest struct {
 	Password string `json:"password" binding:"required,min=8" example:"12345678"`
 }
 
-// @Router			/users [post]
 func (uh *UserHandler) Register(ctx *baehttp.Context) {
 	var req registerRequest
 	if err := ctx.BindJSON(&req); err != nil {
 		return
 	}
 
-	user := domain.User{
-		// Name:     req.Name,
-		// Email:    req.Email,
-		// Password: req.Password,
-	}
+	user := domain.User{}
 
 	rsp, err := uh.svc.Register(&user)
+	if err != nil {
+		ctx.HandleError(err)
+		return
+	}
+
+	ctx.HandleSuccess(rsp)
+}
+
+func (uh *UserHandler) All(ctx *baehttp.Context) {
+	rsp, err := uh.svc.GetAll()
 	if err != nil {
 		ctx.HandleError(err)
 		return
