@@ -29,7 +29,7 @@ func main() {
 			http.AsRoute(huser.NewUserGetAllHandler),
 			http.AsRoute(huser.NewUserRegisterHandlerHandler),
 		),
-		fx.Invoke(http.AddRouter),
+		fx.Invoke(http.ConfigureRouter),
 		fx.Invoke(RunHttpServer),
 	).Run()
 

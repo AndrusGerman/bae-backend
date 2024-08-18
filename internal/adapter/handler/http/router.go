@@ -13,8 +13,8 @@ type RouterDto struct {
 	Handlers []baehttp.Handler `group:"routes"`
 }
 
-// AddRouter creates a new HTTP router
-func AddRouter(rdto RouterDto) {
+// ConfigureRouter creates a new HTTP router
+func ConfigureRouter(rdto RouterDto) {
 	var bae = rdto.CoreBae
 
 	bae.Use(
