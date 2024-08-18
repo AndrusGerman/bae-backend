@@ -6,6 +6,8 @@ type HandlerConfig interface {
 	GetMiddlewares() []IMiddleware
 }
 
+var _ HandlerConfig = (*HandlerBasicConfig)(nil)
+
 type HandlerBasicConfig struct {
 	Pattern     string
 	Method      string

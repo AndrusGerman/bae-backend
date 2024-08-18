@@ -12,6 +12,8 @@ type Context interface {
 	HandleError(err error) error
 }
 
+var _ Context = (*ContextHandler)(nil)
+
 func NewContextHandler(ctx *gin.Context, baeHttp *Bae) Context {
 	return &ContextHandler{ginCtx: ctx, baeHttp: baeHttp}
 }
