@@ -4,10 +4,13 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
+	"go.uber.org/fx"
 )
 
 type (
 	Container struct {
+		fx.Out
+
 		App  *App
 		DB   *DB
 		HTTP *HTTP
@@ -34,11 +37,11 @@ type (
 	}
 )
 
-func New() (*Container, error) {
+func New() (Container, error) {
 	if os.Getenv("APP_ENV") != "production" {
 		err := godotenv.Load()
 		if err != nil {
-			return nil, err
+			return Container{}, err
 		}
 	}
 
@@ -61,9 +64,9 @@ func New() (*Container, error) {
 		URL:  os.Getenv("HTTP_URL"),
 	}
 
-	return &Container{
-		app,
-		db,
-		http,
+	return Container{
+		App:  app,
+		DB:   db,
+		HTTP: http,
 	}, nil
 }

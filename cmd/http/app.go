@@ -18,7 +18,7 @@ import (
 func main() {
 
 	fx.New(
-		fx.NopLogger,
+		//fx.NopLogger,
 
 		fx.Provide(
 			config.New,
@@ -26,6 +26,7 @@ func main() {
 			repository.NewUserRepository,
 			service.NewUserService,
 			baehttp.NewBae,
+
 			http.AsRoute(huser.NewUserGetAllHandler),
 			http.AsRoute(huser.NewUserRegisterHandlerHandler),
 		),
@@ -35,8 +36,8 @@ func main() {
 
 }
 
-func RunHttpServer(config *config.Container, baehttp *baehttp.Bae) {
-	listenAddr := fmt.Sprintf("%s:%s", config.HTTP.URL, config.HTTP.Port)
+func RunHttpServer(httpConfig *config.HTTP, baehttp *baehttp.Bae) {
+	listenAddr := fmt.Sprintf("%s:%s", httpConfig.URL, httpConfig.Port)
 	// Start server
 	slog.Info("Starting the HTTP server", "listen_address", listenAddr)
 	var err = baehttp.Serve(listenAddr)

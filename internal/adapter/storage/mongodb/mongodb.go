@@ -14,8 +14,7 @@ type DB struct {
 	Client        *mongo.Client
 }
 
-func New(configContainer *config.Container) (*DB, error) {
-	var dbConfig = configContainer.DB
+func New(dbConfig *config.DB) (*DB, error) {
 
 	var uri = fmt.Sprintf("mongodb://%s:%s@%s:%s", dbConfig.User, dbConfig.Password, dbConfig.Host, dbConfig.Port) //fmt.Sprintf("mongodb://root:root@localhost:27017/")
 
