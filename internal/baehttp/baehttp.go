@@ -37,7 +37,14 @@ func (baeHttp *Bae) Serve(listenAddr string) error {
 	return baeHttp.core.Run(listenAddr)
 }
 
-func (baeHttp *Bae) Add(handler Handler) *Bae {
+func (baeHttp *Bae) AddHandlers(handlers ...Handler) *Bae {
+	for i := range handlers {
+		baeHttp.AddHandler(handlers[i])
+	}
+	return baeHttp
+}
+
+func (baeHttp *Bae) AddHandler(handler Handler) *Bae {
 	var config = handler.Config()
 	baeHttp.core.Handle(config.GetMethod(), config.GetPattern(), func(ctx *gin.Context) {
 		handler.Handler(baeHttp.NewContextHandler(ctx))

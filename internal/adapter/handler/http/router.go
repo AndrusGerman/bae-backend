@@ -9,21 +9,24 @@ import (
 
 type RouterDto struct {
 	fx.In
-	CoreBae  *baehttp.Bae
 	Handlers []baehttp.Handler `group:"routes"`
 }
 
+type RouterConfiguration struct {
+	Handlers       []baehttp.Handler
+	Middleware     []baehttp.IMiddleware
+	ErrorStatusMap map[error]int
+}
+
 // ConfigureRouter creates a new HTTP router
-func ConfigureRouter(rdto RouterDto) {
-	var bae = rdto.CoreBae
-
-	bae.Use(
-		baehttp.Cors(baehttp.CorsConfig{AllowAllOrigins: true}),
-		baehttp.Recovery(),
-	).ErrorStatusMap(domain.ErrorStatusMap)
-
-	for _, handler := range rdto.Handlers {
-		bae.Add(handler)
+func NewConfigureRouter(rdto RouterDto) *RouterConfiguration {
+	return &RouterConfiguration{
+		Handlers: rdto.Handlers,
+		Middleware: []baehttp.IMiddleware{
+			baehttp.Cors(baehttp.CorsConfig{AllowAllOrigins: true}),
+			baehttp.Recovery(),
+		},
+		ErrorStatusMap: domain.ErrorStatusMap,
 	}
 }
 

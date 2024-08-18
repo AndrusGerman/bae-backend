@@ -19,24 +19,28 @@ func main() {
 
 	fx.New(
 		//fx.NopLogger,
-
 		fx.Provide(
 			config.New,
 			mongodb.New,
 			repository.NewUserRepository,
 			service.NewUserService,
 			baehttp.NewBae,
+			http.NewConfigureRouter,
 
 			http.AsRoute(huser.NewUserGetAllHandler),
 			http.AsRoute(huser.NewUserRegisterHandlerHandler),
 		),
-		fx.Invoke(http.ConfigureRouter),
 		fx.Invoke(RunHttpServer),
 	).Run()
 
 }
 
-func RunHttpServer(httpConfig *config.HTTP, baehttp *baehttp.Bae) {
+func RunHttpServer(httpConfig *config.HTTP, baehttp *baehttp.Bae, routerConfiguration *http.RouterConfiguration) {
+	// set base configuration
+	baehttp.Use(routerConfiguration.Middleware...)
+	baehttp.ErrorStatusMap(routerConfiguration.ErrorStatusMap)
+	baehttp.AddHandlers(routerConfiguration.Handlers...)
+
 	listenAddr := fmt.Sprintf("%s:%s", httpConfig.URL, httpConfig.Port)
 	// Start server
 	slog.Info("Starting the HTTP server", "listen_address", listenAddr)
