@@ -19,11 +19,8 @@ func NewUserRegisterHandlerHandler(svc port.UserService) baehttp.Handler {
 	}
 }
 
-func (uh *UserRegisterHandler) Config() *baehttp.Config {
-	return &baehttp.Config{
-		Pattern: base + "/register",
-		Method:  http.MethodPost,
-	}
+func (uh *UserRegisterHandler) Config() baehttp.HandlerConfig {
+	return baehttp.NewHandlerConfig(http.MethodPost, base+"/register")
 }
 
 // registerRequest represents the request body for creating a user
@@ -33,7 +30,7 @@ type registerDtoRequest struct {
 	Password string `json:"password" binding:"required,min=8" example:"12345678"`
 }
 
-func (uh *UserRegisterHandler) Handler(ctx *baehttp.Context) error {
+func (uh *UserRegisterHandler) Handler(ctx baehttp.Context) error {
 	var err error
 	var req = new(registerDtoRequest)
 	if err = ctx.BindJSON(req); err != nil {

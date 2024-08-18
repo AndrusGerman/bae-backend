@@ -6,26 +6,32 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func NewContext(ctx *gin.Context, baeHttp *Bae) *Context {
-	return &Context{ginCtx: ctx, baeHttp: baeHttp}
+type Context interface {
+	BindJSON(obj any) error
+	HandleSuccess(data any) error
+	HandleError(err error) error
 }
 
-type Context struct {
+func NewContextHandler(ctx *gin.Context, baeHttp *Bae) Context {
+	return &ContextHandler{ginCtx: ctx, baeHttp: baeHttp}
+}
+
+type ContextHandler struct {
 	ginCtx  *gin.Context
 	baeHttp *Bae
 }
 
-func (ctx *Context) BindJSON(obj any) error {
+func (ctx *ContextHandler) BindJSON(obj any) error {
 	return ctx.ginCtx.ShouldBindJSON(obj)
 }
 
-func (ctx *Context) HandleSuccess(data any) error {
+func (ctx *ContextHandler) HandleSuccess(data any) error {
 	rsp := newResponse(true, "Success", data)
 	ctx.ginCtx.JSON(http.StatusOK, rsp)
 	return nil
 }
 
-func (ctx *Context) HandleError(err error) error {
+func (ctx *ContextHandler) HandleError(err error) error {
 	statusCode, ok := ctx.baeHttp.errorStatusMap[err]
 	if !ok {
 		statusCode = http.StatusInternalServerError

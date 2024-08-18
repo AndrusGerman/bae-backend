@@ -29,8 +29,8 @@ func (baeHttp *Bae) Use(middleware ...IMiddleware) *Bae {
 	return baeHttp
 }
 
-func (baeHttp *Bae) NewContext(ctx *gin.Context) *Context {
-	return NewContext(ctx, baeHttp)
+func (baeHttp *Bae) NewContextHandler(ctx *gin.Context) Context {
+	return NewContextHandler(ctx, baeHttp)
 }
 
 func (baeHttp *Bae) Serve(listenAddr string) error {
@@ -39,8 +39,8 @@ func (baeHttp *Bae) Serve(listenAddr string) error {
 
 func (baeHttp *Bae) Add(handler Handler) *Bae {
 	var config = handler.Config()
-	baeHttp.core.Handle(config.Method, config.Pattern, func(ctx *gin.Context) {
-		handler.Handler(baeHttp.NewContext(ctx))
+	baeHttp.core.Handle(config.GetMethod(), config.GetPattern(), func(ctx *gin.Context) {
+		handler.Handler(baeHttp.NewContextHandler(ctx))
 	})
 	return baeHttp
 }

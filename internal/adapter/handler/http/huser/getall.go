@@ -18,14 +18,12 @@ func NewUserGetAllHandler(svc port.UserService) baehttp.Handler {
 	}
 }
 
-func (uh *UserGetAllHandler) Config() *baehttp.Config {
-	return &baehttp.Config{
-		Pattern: base,
-		Method:  http.MethodGet,
-	}
+func (uh *UserGetAllHandler) Config() baehttp.HandlerConfig {
+	return baehttp.NewHandlerConfig(http.MethodGet, base)
+
 }
 
-func (uh *UserGetAllHandler) Handler(ctx *baehttp.Context) error {
+func (uh *UserGetAllHandler) Handler(ctx baehttp.Context) error {
 	rsp, err := uh.svc.GetAll()
 	if err != nil {
 		return ctx.HandleError(err)

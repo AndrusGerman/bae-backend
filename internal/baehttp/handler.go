@@ -1,8 +1,8 @@
 package baehttp
 
 type Handler interface {
-	Handler(ctx *Context) error
-	Config() *Config
+	Handler(ctx Context) error
+	Config() HandlerConfig
 }
 
-type HandlerFunc func(*Context) error
+type HandlerFunc func(*ContextHandler) error
