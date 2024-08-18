@@ -19,12 +19,13 @@ func (ctx *Context) BindJSON(obj any) error {
 	return ctx.ginCtx.ShouldBindJSON(obj)
 }
 
-func (ctx *Context) HandleSuccess(data any) {
+func (ctx *Context) HandleSuccess(data any) error {
 	rsp := newResponse(true, "Success", data)
 	ctx.ginCtx.JSON(http.StatusOK, rsp)
+	return nil
 }
 
-func (ctx *Context) HandleError(err error) {
+func (ctx *Context) HandleError(err error) error {
 	statusCode, ok := ctx.baeHttp.errorStatusMap[err]
 	if !ok {
 		statusCode = http.StatusInternalServerError
@@ -33,4 +34,5 @@ func (ctx *Context) HandleError(err error) {
 	errMsg := err.Error()
 	errRsp := newErrorResponse([]string{errMsg})
 	ctx.ginCtx.JSON(statusCode, errRsp)
+	return nil
 }

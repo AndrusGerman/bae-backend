@@ -20,8 +20,12 @@ func (baeHttp *Bae) ErrorStatusMap(errorStatusMap map[error]int) *Bae {
 	return baeHttp
 }
 
-func (baeHttp *Bae) Use(middleware ...HandlerFunc) *Bae {
-	baeHttp.core.Use(baeHandlersToGin(baeHttp, middleware...)...)
+func (baeHttp *Bae) Use(middleware ...IMiddleware) *Bae {
+	var middlewaresGin = make([]gin.HandlerFunc, len(middleware))
+	for i := range middleware {
+		middlewaresGin[i] = middleware[i].getGinMiddleware()
+	}
+	baeHttp.core.Use(middlewaresGin...)
 	return baeHttp
 }
 
@@ -29,14 +33,14 @@ func (baeHttp *Bae) NewContext(ctx *gin.Context) *Context {
 	return NewContext(ctx, baeHttp)
 }
 
-func (baeHttp *Bae) Group(relativePath string, handlers ...HandlerFunc) *RouterGroup {
-	return NewRouterGroup(baeHttp, relativePath, handlers...)
-}
-
-func (baeHttp *Bae) POST(relativePath string, handlers ...HandlerFunc) {
-	baeHttp.core.POST(relativePath, baeHandlersToGin(baeHttp, handlers...)...)
-}
-
 func (baeHttp *Bae) Serve(listenAddr string) error {
 	return baeHttp.core.Run(listenAddr)
+}
+
+func (baeHttp *Bae) Add(handler Handler) *Bae {
+	var config = handler.Config()
+	baeHttp.core.Handle(config.Method, config.Pattern, func(ctx *gin.Context) {
+		handler.Handler(baeHttp.NewContext(ctx))
+	})
+	return baeHttp
 }

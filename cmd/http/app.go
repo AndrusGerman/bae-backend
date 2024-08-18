@@ -6,51 +6,42 @@ import (
 	"bae-backend/internal/adapter/handler/http/huser"
 	"bae-backend/internal/adapter/storage/mongodb"
 	"bae-backend/internal/adapter/storage/mongodb/repository"
+	"bae-backend/internal/baehttp"
 	"bae-backend/internal/core/service"
 	"fmt"
 	"log/slog"
 	"os"
+
+	"go.uber.org/fx"
 )
 
 func main() {
-	// Load environment variables
-	config, err := config.New()
-	if err != nil {
-		slog.Error("Error loading environment variables", "error", err)
-		os.Exit(1)
-	}
 
-	// Init database
-	db, err := mongodb.New(config.DB)
-	if err != nil {
-		slog.Error("Error initializing database connection", "error", err)
-		os.Exit(1)
-	}
-	defer db.Close()
+	fx.New(
+		fx.NopLogger,
 
-	// Dependency injection
-	// User
-	userRepo := repository.NewUserRepository(db)
-	userService := service.NewUserService(userRepo)
-	userHandler := huser.NewUserHandler(userService)
+		fx.Provide(
+			config.New,
+			mongodb.New,
+			repository.NewUserRepository,
+			service.NewUserService,
+			baehttp.NewBae,
+			http.AsRoute(huser.NewUserGetAllHandler),
+			http.AsRoute(huser.NewUserRegisterHandlerHandler),
+		),
+		fx.Invoke(http.AddRouter),
+		fx.Invoke(RunHttpServer),
+	).Run()
 
-	// Init router
-	router, err := http.NewRouter(
-		config.HTTP,
-		userHandler,
-	)
-	if err != nil {
-		slog.Error("Error initializing router", "error", err)
-		os.Exit(1)
-	}
+}
 
-	// Start server
+func RunHttpServer(config *config.Container, baehttp *baehttp.Bae) {
 	listenAddr := fmt.Sprintf("%s:%s", config.HTTP.URL, config.HTTP.Port)
+	// Start server
 	slog.Info("Starting the HTTP server", "listen_address", listenAddr)
-	err = router.Serve(listenAddr)
+	var err = baehttp.Serve(listenAddr)
 	if err != nil {
 		slog.Error("Error starting the HTTP server", "error", err)
 		os.Exit(1)
 	}
-
 }

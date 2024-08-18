@@ -3,6 +3,7 @@ package repository
 import (
 	"bae-backend/internal/adapter/storage/mongodb"
 	"bae-backend/internal/core/domain"
+	"bae-backend/internal/core/port"
 
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -16,7 +17,7 @@ type UserRepository struct {
 }
 
 // NewUserRepository creates a new user repository instance
-func NewUserRepository(db *mongodb.DB) *UserRepository {
+func NewUserRepository(db *mongodb.DB) port.UserRepository {
 	return &UserRepository{
 		db.NewCollection("users"),
 	}

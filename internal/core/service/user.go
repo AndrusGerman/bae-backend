@@ -5,15 +5,13 @@ import (
 	"bae-backend/internal/core/port"
 )
 
-var _ port.UserService = &UserService{}
-
 type UserService struct {
 	repo port.UserRepository
 }
 
-func NewUserService(repo port.UserRepository) *UserService {
+func NewUserService(repo port.UserRepository) port.UserService {
 	return &UserService{
-		repo,
+		repo: repo,
 	}
 }
 

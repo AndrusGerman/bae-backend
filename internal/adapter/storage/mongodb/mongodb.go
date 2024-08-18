@@ -14,9 +14,10 @@ type DB struct {
 	Client        *mongo.Client
 }
 
-func New(config *config.DB) (*DB, error) {
+func New(configContainer *config.Container) (*DB, error) {
+	var dbConfig = configContainer.DB
 
-	var uri = fmt.Sprintf("mongodb://%s:%s@%s:%s", config.User, config.Password, config.Host, config.Port) //fmt.Sprintf("mongodb://root:root@localhost:27017/")
+	var uri = fmt.Sprintf("mongodb://%s:%s@%s:%s", dbConfig.User, dbConfig.Password, dbConfig.Host, dbConfig.Port) //fmt.Sprintf("mongodb://root:root@localhost:27017/")
 
 	client, err := mongo.Connect(context.TODO(), options.Client().
 		ApplyURI(uri))
@@ -26,7 +27,7 @@ func New(config *config.DB) (*DB, error) {
 	}
 
 	return &DB{
-		MongoDatabase: client.Database(config.Name),
+		MongoDatabase: client.Database(dbConfig.Name),
 		Client:        client,
 	}, nil
 }

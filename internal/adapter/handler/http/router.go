@@ -1,45 +1,36 @@
 package http
 
 import (
-	"bae-backend/internal/adapter/config"
-	"bae-backend/internal/adapter/handler/http/huser"
 	"bae-backend/internal/baehttp"
 	"bae-backend/internal/core/domain"
+
+	"go.uber.org/fx"
 )
 
-// NewRouter creates a new HTTP router
-func NewRouter(
-	config *config.HTTP,
-	userHandler *huser.UserHandler,
-) (*baehttp.Bae, error) {
-	// CORS
+type RouterDto struct {
+	fx.In
+	CoreBae  *baehttp.Bae
+	Handlers []baehttp.Handler `group:"routes"`
+}
 
-	var coreBae = baehttp.NewBae().
-		// add default middleware
-		Use(
-			baehttp.Cors(baehttp.CorsConfig{AllowAllOrigins: true}),
-			baehttp.Recovery(),
-		).
-		// add status map erros
-		ErrorStatusMap(domain.ErrorStatusMap)
+// AddRouter creates a new HTTP router
+func AddRouter(rdto RouterDto) {
+	var bae = rdto.CoreBae
 
-	v1 := coreBae.Group("/v1")
-	{
-		user := v1.Group("/users")
-		{
-			user.GET("/", userHandler.All)
-			user.POST("/", userHandler.Register)
-			// user.POST("/login", authHandler.Login)
+	bae.Use(
+		baehttp.Cors(baehttp.CorsConfig{AllowAllOrigins: true}),
+		baehttp.Recovery(),
+	).ErrorStatusMap(domain.ErrorStatusMap)
 
-			// authUser := user.Group("/")
-			// {
-			// 	authUser.GET("/", userHandler.ListUsers)
-			// 	authUser.GET("/:id", userHandler.GetUser)
-
-			// }
-		}
-
+	for _, handler := range rdto.Handlers {
+		bae.Add(handler)
 	}
+}
 
-	return coreBae, nil
+func AsRoute(f any) any {
+	return fx.Annotate(
+		f,
+		fx.As(new(baehttp.Handler)),
+		fx.ResultTags(`group:"routes"`),
+	)
 }
