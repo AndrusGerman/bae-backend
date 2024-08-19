@@ -58,10 +58,10 @@ func (ur *UserRepository) DeleteUser(id domain.Id) error {
 }
 
 func (ur *UserRepository) GetAll() ([]domain.User, error) {
-	var users = new([]domain.User)
-	var err = ur.collection.FindMany(bson.M{}, users)
+	var users = make([]domain.User, 0)
+	var err = ur.collection.FindMany(bson.M{}, &users)
 	if err != nil {
 		return nil, err
 	}
-	return *users, nil
+	return users, nil
 }
