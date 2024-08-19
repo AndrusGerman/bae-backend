@@ -20,7 +20,7 @@ func (us *UserService) GetUser(id domain.Id) (*domain.User, error) {
 }
 
 func (us *UserService) Register(user *domain.User) (*domain.User, error) {
-	// validate data
+	// validate data //ensureXIsValid
 	return us.userRepo.Create(user)
 }
 
