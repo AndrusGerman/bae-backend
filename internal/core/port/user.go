@@ -8,9 +8,9 @@ import (
 
 type UserRepository interface {
 	// CreateUser inserts a new user into the database
-	CreateUser(user *domain.User) (*domain.User, error)
+	Create(user *domain.User) (*domain.User, error)
 	// GetUserByID selects a user by id
-	GetUserByID(id domain.Id) (*domain.User, error)
+	GetByID(id domain.Id) (*domain.User, error)
 	// GetUserByEmail selects a user by email
 	//GetUserByEmail(email string) (*domain.User, error)
 	// ListUsers selects a list of users with pagination
@@ -36,5 +36,5 @@ type UserService interface {
 	//DeleteUser(id uint64) error
 
 	// GetAll get all users
-	GetAll() ([]domain.User, error)
+	GetAllUsers() ([]domain.User, error)
 }

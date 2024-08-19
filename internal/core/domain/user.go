@@ -1,8 +1,8 @@
 package domain
 
 type User struct {
-	Id      Id     `json:"Id"`
-	Country string `json:"country"`
-	Phone   string `json:"phone"`
-	Email   string `json:"email"`
+	Id      Id     `json:"Id" bson:"_id"`
+	Country string `json:"country" bson:"country"`
+	Phone   string `json:"phone" bson:"phone"`
+	Email   string `json:"email" bson:"email"`
 }

@@ -8,13 +8,13 @@ import (
 
 // UserGetAllHandler represents the HTTP handler for user-related requests
 type UserGetAllHandler struct {
-	svc port.UserService
+	userService port.UserService
 }
 
 // NewUserGetAllHandler creates a new UserGetAllHandler instance
-func NewUserGetAllHandler(svc port.UserService) baehttp.Handler {
+func NewUserGetAllHandler(userService port.UserService) baehttp.Handler {
 	return &UserGetAllHandler{
-		svc: svc,
+		userService: userService,
 	}
 }
 
@@ -24,7 +24,7 @@ func (uh *UserGetAllHandler) Config() baehttp.HandlerConfig {
 }
 
 func (uh *UserGetAllHandler) Handler(ctx baehttp.Context) error {
-	rsp, err := uh.svc.GetAll()
+	rsp, err := uh.userService.GetAllUsers()
 	if err != nil {
 		return ctx.HandleError(err)
 

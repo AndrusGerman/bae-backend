@@ -6,25 +6,25 @@ import (
 )
 
 type UserService struct {
-	repo port.UserRepository
+	userRepo port.UserRepository
 }
 
-func NewUserService(repo port.UserRepository) port.UserService {
+func NewUserService(userRepo port.UserRepository) port.UserService {
 	return &UserService{
-		repo: repo,
+		userRepo: userRepo,
 	}
 }
 
 func (us *UserService) GetUser(id domain.Id) (*domain.User, error) {
-	return us.repo.GetUserByID(id)
+	return us.userRepo.GetByID(id)
 }
 
 func (us *UserService) Register(user *domain.User) (*domain.User, error) {
 	// validate data
-	return us.repo.CreateUser(user)
+	return us.userRepo.Create(user)
 }
 
-func (us *UserService) GetAll() ([]domain.User, error) {
+func (us *UserService) GetAllUsers() ([]domain.User, error) {
 	// validate data
-	return us.repo.GetAll()
+	return us.userRepo.GetAll()
 }
