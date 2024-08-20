@@ -13,15 +13,17 @@ type RouterDto struct {
 	Bae      *baehttp.Bae
 }
 
-func DecorateHandlerConfiguration(routerDto RouterDto) *baehttp.Bae {
-	// set base configuration
-	routerDto.Bae.Use(
-		baehttp.Cors(baehttp.CorsConfig{AllowAllOrigins: true}),
-		baehttp.Recovery(),
-	)
-	routerDto.Bae.ErrorStatusMap(domain.ErrorStatusMap)
-	routerDto.Bae.AddHandlers(routerDto.Handlers...)
-	return routerDto.Bae
+func DecorateHandlerConfiguration(dto RouterDto) *baehttp.Bae {
+	return dto.Bae.
+		// set middlewares
+		Use(
+			baehttp.Cors(baehttp.CorsConfig{AllowAllOrigins: true}),
+			baehttp.Recovery(),
+		).
+		// set response error status map
+		ErrorStatusMap(domain.ErrorStatusMap).
+		// add handlers
+		AddHandlers(dto.Handlers...)
 }
 
 func AsRoute(f any) any {
