@@ -25,11 +25,16 @@ func main() {
 			service.NewUserService,
 			baehttp.NewBae,
 		),
-		fx.Decorate(http.DecorateHandlerConfiguration),
+		http.MiddlewaresModule(
+			fx.Supply(&baehttp.CorsConfig{AllowAllOrigins: true}),
+			baehttp.Cors,
+			baehttp.Recovery,
+		),
 		http.RouterModule(
 			huser.NewUserGetAllHandler,
 			huser.NewUserRegisterHandlerHandler,
 		),
+		fx.Decorate(http.DecorateHandlerConfiguration),
 		fx.Invoke(RunHttpServer),
 	).Run()
 

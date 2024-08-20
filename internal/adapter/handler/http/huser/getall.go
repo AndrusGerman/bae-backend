@@ -20,7 +20,6 @@ func NewUserGetAllHandler(userService port.UserService) baehttp.Handler {
 
 func (uh *UserGetAllHandler) Config() baehttp.HandlerConfig {
 	return baehttp.NewHandlerConfig(http.MethodGet, base)
-
 }
 
 func (uh *UserGetAllHandler) Handler(ctx baehttp.Context) error {

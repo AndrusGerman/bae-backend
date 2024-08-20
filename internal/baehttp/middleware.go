@@ -22,7 +22,7 @@ type CorsConfig struct {
 	AllowAllOrigins bool
 }
 
-func Cors(config CorsConfig) *GinMiddleware {
+func Cors(config *CorsConfig) IMiddleware {
 	var configCors = cors.DefaultConfig()
 	configCors.AllowAllOrigins = config.AllowAllOrigins
 	return &GinMiddleware{
@@ -31,7 +31,7 @@ func Cors(config CorsConfig) *GinMiddleware {
 
 }
 
-func Recovery() *GinMiddleware {
+func Recovery() IMiddleware {
 	return &GinMiddleware{
 		ginMiddleware: gin.Recovery(),
 	}
