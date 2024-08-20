@@ -37,3 +37,12 @@ func AsRoute(f any) any {
 		fx.ResultTags(`group:"routes"`),
 	)
 }
+
+func RouterModule(handlers ...any) fx.Option {
+	var routeAnnotate = make([]any, len(handlers))
+	for i := range handlers {
+		routeAnnotate[i] = AsRoute(handlers[i])
+	}
+
+	return fx.Module("routes", fx.Provide(routeAnnotate...))
+}

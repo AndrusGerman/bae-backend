@@ -16,7 +16,6 @@ import (
 )
 
 func main() {
-
 	fx.New(
 		//fx.NopLogger,
 		fx.Provide(
@@ -26,9 +25,10 @@ func main() {
 			service.NewUserService,
 			baehttp.NewBae,
 			http.NewConfigureRouter,
-
-			http.AsRoute(huser.NewUserGetAllHandler),
-			http.AsRoute(huser.NewUserRegisterHandlerHandler),
+		),
+		http.RouterModule(
+			huser.NewUserGetAllHandler,
+			huser.NewUserRegisterHandlerHandler,
 		),
 		fx.Invoke(RunHttpServer),
 	).Run()
