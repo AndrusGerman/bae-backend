@@ -24,8 +24,8 @@ func main() {
 			repository.NewUserRepository,
 			service.NewUserService,
 			baehttp.NewBae,
-			http.NewConfigureRouter,
 		),
+		fx.Decorate(http.DecorateHandlerConfiguration),
 		http.RouterModule(
 			huser.NewUserGetAllHandler,
 			huser.NewUserRegisterHandlerHandler,
@@ -35,12 +35,7 @@ func main() {
 
 }
 
-func RunHttpServer(httpConfig *config.HTTP, baehttp *baehttp.Bae, routerConfiguration *http.RouterConfiguration) {
-	// set base configuration
-	baehttp.Use(routerConfiguration.Middleware...)
-	baehttp.ErrorStatusMap(routerConfiguration.ErrorStatusMap)
-	baehttp.AddHandlers(routerConfiguration.Handlers...)
-
+func RunHttpServer(httpConfig *config.HTTP, baehttp *baehttp.Bae) {
 	listenAddr := fmt.Sprintf("%s:%s", httpConfig.URL, httpConfig.Port)
 	// Start server
 	slog.Info("Starting the HTTP server", "listen_address", listenAddr)

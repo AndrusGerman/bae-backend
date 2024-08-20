@@ -10,24 +10,18 @@ import (
 type RouterDto struct {
 	fx.In
 	Handlers []baehttp.Handler `group:"routes"`
+	Bae      *baehttp.Bae
 }
 
-type RouterConfiguration struct {
-	Handlers       []baehttp.Handler
-	Middleware     []baehttp.IMiddleware
-	ErrorStatusMap map[error]int
-}
-
-// ConfigureRouter creates a new HTTP router
-func NewConfigureRouter(rdto RouterDto) *RouterConfiguration {
-	return &RouterConfiguration{
-		Handlers: rdto.Handlers,
-		Middleware: []baehttp.IMiddleware{
-			baehttp.Cors(baehttp.CorsConfig{AllowAllOrigins: true}),
-			baehttp.Recovery(),
-		},
-		ErrorStatusMap: domain.ErrorStatusMap,
-	}
+func DecorateHandlerConfiguration(routerDto RouterDto) *baehttp.Bae {
+	// set base configuration
+	routerDto.Bae.Use(
+		baehttp.Cors(baehttp.CorsConfig{AllowAllOrigins: true}),
+		baehttp.Recovery(),
+	)
+	routerDto.Bae.ErrorStatusMap(domain.ErrorStatusMap)
+	routerDto.Bae.AddHandlers(routerDto.Handlers...)
+	return routerDto.Bae
 }
 
 func AsRoute(f any) any {
