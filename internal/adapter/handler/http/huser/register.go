@@ -43,7 +43,6 @@ func (uh *UserRegisterHandler) Handler(ctx baehttp.Context) error {
 
 	rsp, err := uh.svc.Register(&user)
 	if err != nil {
-		return ctx.HandleSuccess(err.Error())
 		return ctx.HandleError(err)
 	}
 
