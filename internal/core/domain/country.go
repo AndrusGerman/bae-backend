@@ -16,15 +16,6 @@ type CountryInfo struct {
 
 type Country countries.CountryCode
 
-func ContryAll() []Country {
-	var raw = countries.All()
-	var resp = make([]Country, len(raw))
-	for i := range raw {
-		resp[i] = Country(raw[i])
-	}
-	return resp
-}
-
 func (country Country) Alpha() string {
 	return countries.CountryCode(country).Alpha2()
 }
@@ -62,4 +53,8 @@ func (country Country) Info() *CountryInfo {
 
 func (country Country) MarshalJSON() ([]byte, error) {
 	return json.Marshal(country.Info())
+}
+
+func (country Country) IsUnknown() bool {
+	return country.String() == countries.UnknownMsg
 }

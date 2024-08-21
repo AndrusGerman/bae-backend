@@ -24,6 +24,7 @@ func main() {
 			mongodb.New,
 			repository.NewUserRepository,
 			service.NewUserService,
+			service.NewCountryService,
 			baehttp.NewBae,
 		),
 		http.MiddlewaresModule(
