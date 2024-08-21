@@ -11,6 +11,8 @@ var (
 
 	// ErrInternal is not implement
 	ErrNotImplement = errors.New("err not implement")
+
+	ErrThiCallCodeIsNotFound = errors.New("this callcode is not found in this country")
 )
 
 var ErrorStatusMap = map[error]int{
