@@ -9,6 +9,12 @@ type IMiddleware interface {
 	getGinMiddleware() gin.HandlerFunc
 }
 
+func NewGinMiddleware(ginMiddleware gin.HandlerFunc) IMiddleware {
+	return &GinMiddleware{
+		ginMiddleware: ginMiddleware,
+	}
+}
+
 type GinMiddleware struct {
 	ginMiddleware gin.HandlerFunc
 }
@@ -25,14 +31,10 @@ type CorsConfig struct {
 func Cors(config *CorsConfig) IMiddleware {
 	var configCors = cors.DefaultConfig()
 	configCors.AllowAllOrigins = config.AllowAllOrigins
-	return &GinMiddleware{
-		ginMiddleware: cors.New(configCors),
-	}
+	return NewGinMiddleware(cors.New(configCors))
 
 }
 
 func Recovery() IMiddleware {
-	return &GinMiddleware{
-		ginMiddleware: gin.Recovery(),
-	}
+	return NewGinMiddleware(gin.Recovery())
 }

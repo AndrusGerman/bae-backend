@@ -3,7 +3,7 @@ package baehttp
 type HandlerConfig interface {
 	GetPattern() string
 	GetMethod() string
-	GetMiddlewares() []IMiddleware
+	GetMiddlewares() []any
 }
 
 var _ HandlerConfig = (*HandlerBasicConfig)(nil)
@@ -11,7 +11,7 @@ var _ HandlerConfig = (*HandlerBasicConfig)(nil)
 type HandlerBasicConfig struct {
 	Pattern     string
 	Method      string
-	Middlewares []IMiddleware
+	Middlewares []any
 }
 
 func (hc *HandlerBasicConfig) GetPattern() string {
@@ -21,11 +21,11 @@ func (hc *HandlerBasicConfig) GetMethod() string {
 	return hc.Method
 }
 
-func (hc *HandlerBasicConfig) GetMiddlewares() []IMiddleware {
+func (hc *HandlerBasicConfig) GetMiddlewares() []any {
 	return hc.Middlewares
 }
 
-func NewHandlerConfig(method string, pattern string, Middlewares ...IMiddleware) HandlerConfig {
+func NewHandlerConfig(method string, pattern string, Middlewares ...any) HandlerConfig {
 	return &HandlerBasicConfig{
 		Method:      method,
 		Pattern:     pattern,
