@@ -4,6 +4,8 @@ import (
 	"encoding"
 	"time"
 
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/bsontype"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -16,11 +18,10 @@ type Id struct {
 	value primitive.ObjectID
 }
 
-func (id Id) MarshalJSON() ([]byte, error) {
-	return id.value.MarshalJSON()
-}
-func (id Id) MarshalText() ([]byte, error) {
-	return id.value.MarshalText()
+func NewId() Id {
+	return Id{
+		value: primitive.NewObjectID(),
+	}
 }
 
 func (id Id) Hex() string {
@@ -38,8 +39,24 @@ func (id Id) Timestamp() time.Time {
 	return id.value.Timestamp()
 }
 
+func (id Id) MarshalJSON() ([]byte, error) {
+	return id.value.MarshalJSON()
+}
+
+func (id Id) MarshalBSONValue() (bsontype.Type, []byte, error) {
+	return bson.MarshalValue(id.value)
+}
+
+func (id Id) MarshalText() ([]byte, error) {
+	return id.value.MarshalText()
+}
+
 func (id *Id) UnmarshalJSON(b []byte) error {
 	return id.value.UnmarshalJSON(b)
+}
+
+func (id *Id) UnmarshalBSONValue(t bsontype.Type, b []byte) error {
+	return bson.UnmarshalValue(t, b, &id.value)
 }
 
 func (id *Id) UnmarshalText(b []byte) error {

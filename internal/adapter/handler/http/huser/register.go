@@ -25,9 +25,9 @@ func (uh *UserRegisterHandler) Config() baehttp.HandlerConfig {
 
 // registerRequest represents the request body for creating a user
 type registerDtoRequest struct {
-	Name     string `json:"name" binding:"required" example:"John Doe"`
-	Email    string `json:"email" binding:"required,email" example:"test@example.com"`
-	Password string `json:"password" binding:"required,min=8" example:"12345678"`
+	//Name     string `json:"name" binding:"required" example:"John Doe"`
+	Email string `json:"email" binding:"required,email" example:"test@example.com"`
+	//Password string `json:"password" binding:"required,min=8" example:"12345678"`
 }
 
 func (uh *UserRegisterHandler) Handler(ctx baehttp.Context) error {
@@ -43,6 +43,7 @@ func (uh *UserRegisterHandler) Handler(ctx baehttp.Context) error {
 
 	rsp, err := uh.svc.Register(&user)
 	if err != nil {
+		return ctx.HandleSuccess(err.Error())
 		return ctx.HandleError(err)
 	}
 

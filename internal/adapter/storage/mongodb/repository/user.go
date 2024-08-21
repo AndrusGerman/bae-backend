@@ -25,6 +25,7 @@ func NewUserRepository(db *mongodb.DB) port.UserRepository {
 
 // CreateUser creates a new user in the database
 func (ur *UserRepository) Create(user *domain.User) (*domain.User, error) {
+	user.Id = domain.NewId()
 	var err = ur.collection.InsertOne(user)
 	return user, err
 }
