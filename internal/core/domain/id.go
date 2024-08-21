@@ -9,8 +9,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-//import "go.mongodb.org/mongo-driver/bson/primitive"
-
 var _ encoding.TextMarshaler = Id{}
 var _ encoding.TextUnmarshaler = &Id{}
 
