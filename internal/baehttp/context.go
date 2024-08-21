@@ -10,6 +10,7 @@ type Context interface {
 	BindJSON(obj any) error
 	HandleSuccess(data any) error
 	HandleError(err error) error
+	Param(paramName string) Param
 }
 
 var _ Context = (*ContextHandler)(nil)
@@ -43,4 +44,8 @@ func (ctx *ContextHandler) HandleError(err error) error {
 	errRsp := newErrorResponse([]string{errMsg})
 	ctx.ginCtx.JSON(statusCode, errRsp)
 	return nil
+}
+
+func (ctx *ContextHandler) Param(paramName string) Param {
+	return Param(ctx.ginCtx.Param(paramName))
 }

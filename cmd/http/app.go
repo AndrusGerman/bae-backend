@@ -35,6 +35,7 @@ func main() {
 			huser.NewUserGetAllHandler,
 			huser.NewUserRegisterHandlerHandler,
 			hcountry.NewCountryGetAllHandler,
+			hcountry.NewCountryGetHandler,
 		),
 		fx.Decorate(http.DecorateHandlerConfiguration),
 		fx.Invoke(RunHttpServer),

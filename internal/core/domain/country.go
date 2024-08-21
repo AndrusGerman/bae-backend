@@ -7,10 +7,11 @@ import (
 )
 
 type CountryInfo struct {
-	Alpha     string `json:"alpha"`
-	CountryId uint   `json:"countryId"`
-	Name      string `json:"name"`
-	Emoji     string `json:"emoji"`
+	Alpha     string    `json:"alpha"`
+	CountryId uint      `json:"countryId"`
+	Name      string    `json:"name"`
+	Emoji     string    `json:"emoji"`
+	CallCodes CallCodes `json:"callCodes"`
 }
 
 type Country countries.CountryCode
@@ -55,6 +56,7 @@ func (country Country) Info() *CountryInfo {
 		CountryId: uint(country.Id()),
 		Name:      country.String(),
 		Emoji:     country.Emoji(),
+		CallCodes: country.CallCodes(),
 	}
 }
 
