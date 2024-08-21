@@ -22,6 +22,13 @@ func NewId() Id {
 	}
 }
 
+func NewIdFromHex(id string) (Id, error) {
+	var value, err = primitive.ObjectIDFromHex(id)
+	return Id{
+		value: value,
+	}, err
+}
+
 func (id Id) Hex() string {
 	return id.value.Hex()
 }

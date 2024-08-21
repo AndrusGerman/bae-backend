@@ -35,6 +35,8 @@ func main() {
 		http.RouterModule(
 			huser.NewUserGetAllHandler,
 			huser.NewUserRegisterHandlerHandler,
+			huser.NewUserGetUserByIdPhoneHandler,
+			huser.NewUserGetUserByFullPhoneHandler,
 			hcountry.NewCountryGetAllHandler,
 			hcountry.NewCountryGetHandler,
 		),

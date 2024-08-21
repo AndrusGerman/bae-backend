@@ -85,3 +85,28 @@ func (ur *UserRepository) GetAll() ([]domain.User, error) {
 	}
 	return users, nil
 }
+
+func (ur *UserRepository) GetByFullPhone(fullPhone string) (*domain.User, error) {
+	var user = new(domain.User)
+	var err = ur.collection.FindOne(
+		bson.D{
+			{"$expr",
+				bson.D{
+					{"$eq",
+						bson.A{
+							bson.D{
+								{"$concat",
+									bson.A{
+										bson.D{{"$toString", "$phone.callCode"}},
+										bson.D{{"$toString", "$phone.number"}},
+									},
+								},
+							},
+							fullPhone,
+						},
+					},
+				},
+			},
+		}, user)
+	return user, err
+}

@@ -24,6 +24,7 @@ type UserRepository interface {
 	GetAll() ([]domain.User, error)
 
 	GetByPhone(phone domain.Phone) (*domain.User, error)
+	GetByFullPhone(fullPhone string) (*domain.User, error)
 }
 
 // UserService is an interface for interacting with user-related business logic
@@ -39,4 +40,5 @@ type UserService interface {
 
 	// GetAll get all users
 	GetAllUsers() ([]domain.User, error)
+	GetByFullPhone(fullPhone string) (*domain.User, error)
 }

@@ -28,3 +28,7 @@ func (us *UserService) GetAllUsers() ([]domain.User, error) {
 	// validate data
 	return us.userRepo.GetAll()
 }
+
+func (us *UserService) GetByFullPhone(fullPhone string) (*domain.User, error) {
+	return us.userRepo.GetByFullPhone(fullPhone)
+}
