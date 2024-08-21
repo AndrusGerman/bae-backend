@@ -2,6 +2,8 @@ package domain
 
 import (
 	"encoding/json"
+
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 type PhoneBase struct {
@@ -35,4 +37,12 @@ func (phone *Phone) UnmarshalJSON(b []byte) error {
 		return ErrThiCallCodeIsNotFound
 	}
 	return nil
+}
+
+func (phone Phone) MarshalBSON() ([]byte, error) {
+	return bson.Marshal(phone.PhoneBase)
+}
+
+func (phone *Phone) UnmarshalBSON(b []byte) error {
+	return bson.Unmarshal(b, &phone.PhoneBase)
 }
