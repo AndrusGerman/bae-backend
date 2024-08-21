@@ -50,12 +50,6 @@ func (ur *UserRepository) GetByID(id domain.Id) (*domain.User, error) {
 	return user, nil
 }
 
-// GetUserByEmailAndPassword gets a user by email from the database
-func (ur *UserRepository) GetByEmail(email string) (*domain.User, error) {
-
-	return nil, nil
-}
-
 // UpdateUser updates a user by ID in the database
 func (ur *UserRepository) Save(user *domain.User) (*domain.User, error) {
 
