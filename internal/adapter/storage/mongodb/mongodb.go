@@ -39,6 +39,10 @@ func (db *DB) GetMongoCollection(collectionName string) *mongo.Collection {
 	return db.MongoDatabase.Collection(collectionName)
 }
 
+func (db *DB) CreateCollection(collectionName string, cco ...*options.CreateCollectionOptions) error {
+	return db.MongoDatabase.CreateCollection(context.TODO(), collectionName, cco...)
+}
+
 func (db *DB) Close() error {
 	return db.MongoDatabase.Client().Disconnect(context.TODO())
 }

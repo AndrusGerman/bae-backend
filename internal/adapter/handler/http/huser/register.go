@@ -25,8 +25,9 @@ func (uh *UserRegisterHandler) Config() baehttp.HandlerConfig {
 
 // registerRequest represents the request body for creating a user
 type registerDtoRequest struct {
-	Phone    domain.Phone `json:"phone" binding:"required"`
-	UserName string       `json:"userName" binding:"required"`
+	Phone    domain.Phone   `json:"phone" binding:"required"`
+	UserName string         `json:"userName" binding:"required"`
+	Country  domain.Country `json:"countryId" binding:"required"`
 }
 
 func (uh *UserRegisterHandler) Handler(ctx baehttp.Context) error {
@@ -39,6 +40,7 @@ func (uh *UserRegisterHandler) Handler(ctx baehttp.Context) error {
 	user := domain.User{
 		Phone:    req.Phone,
 		UserName: req.UserName,
+		Country:  req.Country,
 	}
 
 	rsp, err := uh.svc.Register(&user)

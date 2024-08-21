@@ -6,6 +6,7 @@ import (
 	"bae-backend/internal/core/port"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 /**
@@ -18,15 +19,24 @@ type UserRepository struct {
 
 // NewUserRepository creates a new user repository instance
 func NewUserRepository(db *mongodb.DB) port.UserRepository {
+	var collection = db.NewCollection("users")
 	return &UserRepository{
-		db.NewCollection("users"),
+		collection,
 	}
 }
 
 // CreateUser creates a new user in the database
 func (ur *UserRepository) Create(user *domain.User) (*domain.User, error) {
+	var _, err = ur.GetByPhone(user.Phone)
+	if err != nil && err != mongo.ErrNoDocuments {
+		return nil, err
+	}
+	if err == nil {
+		return nil, domain.ErrThisElementIsAlredyExist
+	}
+
 	user.Id = domain.NewId()
-	var err = ur.collection.InsertOne(user)
+	err = ur.collection.InsertOne(user)
 	return user, err
 }
 
@@ -50,6 +60,15 @@ func (ur *UserRepository) GetByEmail(email string) (*domain.User, error) {
 func (ur *UserRepository) Save(user *domain.User) (*domain.User, error) {
 
 	return nil, nil
+}
+
+func (ur *UserRepository) GetByPhone(phone domain.Phone) (*domain.User, error) {
+	var user = new(domain.User)
+	var err = ur.collection.FindOne(bson.D{
+		{"phone.number", phone.Number},
+		{"phone.callCode", phone.CallCode.Int64()},
+	}, user)
+	return user, err
 }
 
 // DeleteUser deletes a user by ID from the database
