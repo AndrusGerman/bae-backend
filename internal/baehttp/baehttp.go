@@ -62,20 +62,26 @@ func (baeHttp *Bae) AddHandler(handlerAdd IHandlerAdd) *Bae {
 
 func (baeHttp *Bae) newGinHandler(handler Handler, middlewares []IMiddleware) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		var err error
-		for i := range middlewares {
-			var baeContext = baeHttp.NewContextHandler(ctx)
-			err = middlewares[i].Handler(baeContext)
-			if err != nil {
-				slog.Info("middleware error")
-				return
-			}
-			if !baeContext.IsNext() {
-				slog.Info("middleware is stop")
-				return
-			}
+		shouldReturn := baeHttp.runMiddlewares(middlewares, ctx)
+		if shouldReturn {
+			return
 		}
-
 		handler.Handler(baeHttp.NewContextHandler(ctx))
 	}
+}
+
+func (baeHttp *Bae) runMiddlewares(middlewares []IMiddleware, ctx *gin.Context) bool {
+	for i := range middlewares {
+		var baeContext = baeHttp.NewContextHandler(ctx)
+		var err = middlewares[i].Handler(baeContext)
+		if err != nil {
+			slog.Info("middleware error")
+			return true
+		}
+		if !baeContext.IsNext() {
+			slog.Info("middleware is stop")
+			return true
+		}
+	}
+	return false
 }
