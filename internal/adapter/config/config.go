@@ -1,6 +1,7 @@
 package config
 
 import (
+	"bae-backend/internal/core/domain"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -18,7 +19,7 @@ type (
 	// App contains all the environment variables for the application
 	App struct {
 		Name string
-		Env  string
+		Env  domain.Env
 	}
 
 	// Database contains all the environment variables for the database
@@ -34,6 +35,7 @@ type (
 	HTTP struct {
 		Port string
 		URL  string
+		Env  domain.Env
 	}
 )
 
@@ -47,7 +49,7 @@ func New() (Container, error) {
 
 	app := &App{
 		Name: os.Getenv("APP_NAME"),
-		Env:  os.Getenv("APP_ENV"),
+		Env:  domain.Env(os.Getenv("APP_ENV")),
 	}
 
 	db := &DB{
@@ -62,6 +64,7 @@ func New() (Container, error) {
 	http := &HTTP{
 		Port: os.Getenv("HTTP_PORT"),
 		URL:  os.Getenv("HTTP_URL"),
+		Env:  domain.Env(os.Getenv("HTTP_ENV")),
 	}
 
 	return Container{

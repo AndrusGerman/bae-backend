@@ -33,7 +33,7 @@ func main() {
 	)
 
 	fx.New(
-		//fx.NopLogger,
+		fx.NopLogger,
 		coreApp,
 		globalHttpMiddleware,
 		http.RouterModule(
@@ -45,7 +45,7 @@ func main() {
 			hcountry.NewCountryGetAllHandler,
 			hcountry.NewCountryGetHandler,
 		),
-		fx.Decorate(http.DecorateHandlerConfiguration),
+		fx.Decorate(http.DecorateBaeInject),
 		fx.Invoke(RunHttpServer),
 	).Run()
 

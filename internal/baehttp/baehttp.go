@@ -1,6 +1,7 @@
 package baehttp
 
 import (
+	"bae-backend/internal/core/domain"
 	"log/slog"
 
 	"github.com/gin-gonic/gin"
@@ -15,7 +16,6 @@ func NewBae() *Bae {
 	var baeHttp = new(Bae)
 	baeHttp.core = gin.New()
 	baeHttp.errorStatusMap = make(map[error]int)
-
 	return baeHttp
 }
 
@@ -39,6 +39,16 @@ func (baeHttp *Bae) NewContextHandler(ctx *gin.Context) Context {
 
 func (baeHttp *Bae) Serve(listenAddr string) error {
 	return baeHttp.core.Run(listenAddr)
+}
+
+func (baeHttp *Bae) Mode(env domain.Env) *Bae {
+	if env == domain.EnvRelease {
+		gin.SetMode(gin.ReleaseMode)
+	}
+	if env == domain.EnvDevelopment {
+		gin.SetMode(gin.DebugMode)
+	}
+	return baeHttp
 }
 
 func (baeHttp *Bae) AddHandlers(handlers ...IHandlerAdd) *Bae {
