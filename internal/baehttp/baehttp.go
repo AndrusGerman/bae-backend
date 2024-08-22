@@ -41,10 +41,10 @@ func (baeHttp *Bae) Serve(listenAddr string) error {
 	return baeHttp.core.Run(listenAddr)
 }
 
-func (baeHttp *Bae) AddHandlers(handlers ...Handler) *Bae {
+func (baeHttp *Bae) AddHandlers(handlers ...IHandlerAdd) *Bae {
 	for i := range handlers {
 		baeHttp.AddHandler(
-			NewHandlerAdd(handlers[i]),
+			handlers[i],
 		)
 	}
 	return baeHttp
@@ -54,6 +54,8 @@ func (baeHttp *Bae) AddHandler(handlerAdd IHandlerAdd) *Bae {
 	var handler = handlerAdd.GetHandler()
 	var config = handler.Config()
 	var middlewares = handlerAdd.GetMiddlewares()
+
+	slog.Info("add: "+config.GetPattern(), "middlewarecount", len(middlewares))
 
 	var ginHandler = baeHttp.newGinHandler(handler, middlewares)
 	baeHttp.core.Handle(config.GetMethod(), config.GetPattern(), ginHandler)

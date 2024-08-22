@@ -22,6 +22,10 @@ type GinMiddleware struct {
 
 func (gm *GinMiddleware) Handler(ctx Context) error {
 	gm.base(ctx.getGin())
+	if ctx.getGin().IsAborted() {
+		return nil
+	}
+	ctx.Next()
 	return nil
 }
 

@@ -5,7 +5,6 @@ import (
 	"bae-backend/internal/adapter/handler/http"
 	"bae-backend/internal/adapter/handler/http/hcountry"
 	"bae-backend/internal/adapter/handler/http/huser"
-	"bae-backend/internal/adapter/handler/http/middleware"
 	"bae-backend/internal/adapter/storage/mongodb"
 	"bae-backend/internal/adapter/storage/mongodb/repository"
 	"bae-backend/internal/baehttp"
@@ -34,11 +33,11 @@ func main() {
 	)
 
 	fx.New(
-		fx.NopLogger,
+		//fx.NopLogger,
 		coreApp,
 		globalHttpMiddleware,
 		http.RouterModule(
-			http.MiddlewareModule(middleware.NewAuthMiddleware),
+			http.NewRouterModuleConfig(),
 			huser.NewUserGetAllHandler,
 			huser.NewUserRegisterHandlerHandler,
 			huser.NewUserGetUserByIdPhoneHandler,
