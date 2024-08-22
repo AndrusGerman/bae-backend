@@ -1,28 +1,33 @@
 package baehttp
 
-type HandlerConfig interface {
-	GetPattern() string
-	GetMethod() string
+import "bae-backend/internal/core/domain"
+
+type ErrorStatusMap map[error]int
+
+type Config struct {
+	Mode           domain.Env
+	Middleware     []IMiddleware
+	ErrorStatusMap ErrorStatusMap
+	HandlesAdd     []IHandlerAdd
 }
 
-var _ HandlerConfig = (*HandlerBasicConfig)(nil)
-
-type HandlerBasicConfig struct {
-	Pattern     string
-	Method      string
-	Middlewares []IMiddleware
-}
-
-func (hc *HandlerBasicConfig) GetPattern() string {
-	return hc.Pattern
-}
-func (hc *HandlerBasicConfig) GetMethod() string {
-	return hc.Method
-}
-
-func NewHandlerConfig(method string, pattern string) HandlerConfig {
-	return &HandlerBasicConfig{
-		Method:  method,
-		Pattern: pattern,
+func (config *Config) GetMode() domain.Env {
+	if config.Mode == "" {
+		return domain.EnvDevelopment
 	}
+	return config.Mode
+}
+
+func (config *Config) GetErrorStatusMap() ErrorStatusMap {
+	if config.ErrorStatusMap == nil {
+		return make(ErrorStatusMap)
+	}
+	return config.ErrorStatusMap
+}
+func (config *Config) GetMiddleware() []IMiddleware {
+	return config.Middleware
+}
+
+func (config *Config) GetHandlesAdd() []IHandlerAdd {
+	return config.HandlesAdd
 }

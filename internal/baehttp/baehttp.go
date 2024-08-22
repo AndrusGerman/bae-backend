@@ -9,14 +9,16 @@ import (
 
 type Bae struct {
 	core           *gin.Engine
-	errorStatusMap map[error]int
+	errorStatusMap ErrorStatusMap
 }
 
-func NewBae() *Bae {
+func NewBae(config *Config) *Bae {
 	var baeHttp = new(Bae)
-	baeHttp.core = gin.New()
-	baeHttp.errorStatusMap = make(map[error]int)
-	return baeHttp
+	return baeHttp.Mode(config.Mode).
+		setCore(gin.New()).
+		ErrorStatusMap(config.GetErrorStatusMap()).
+		Use(config.Middleware...).
+		AddHandlers(config.GetHandlesAdd()...)
 }
 
 func (baeHttp *Bae) ErrorStatusMap(errorStatusMap map[error]int) *Bae {
@@ -30,6 +32,11 @@ func (baeHttp *Bae) Use(middleware ...IMiddleware) *Bae {
 		middlewaresGin[i] = middleware[i].toGin()
 	}
 	baeHttp.core.Use(middlewaresGin...)
+	return baeHttp
+}
+
+func (baeHttp *Bae) setCore(core *gin.Engine) *Bae {
+	baeHttp.core = core
 	return baeHttp
 }
 

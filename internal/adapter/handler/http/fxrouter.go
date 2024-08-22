@@ -1,34 +1,11 @@
 package http
 
 import (
-	"bae-backend/internal/adapter/config"
 	"bae-backend/internal/baehttp"
-	"bae-backend/internal/core/domain"
 	"bae-backend/internal/core/util"
 
 	"go.uber.org/fx"
 )
-
-type routerDto struct {
-	fx.In
-	HandlersAdd []baehttp.IHandlerAdd `group:"handlers_add"`
-	Middleware  []baehttp.IMiddleware `group:"global_middleware"`
-	Bae         *baehttp.Bae
-	Config      *config.HTTP
-}
-
-func DecorateBaeInject(dto routerDto) *baehttp.Bae {
-	return dto.Bae.
-		// set mode
-		Mode(dto.Config.Env).
-		// set middlewares
-		Use(dto.Middleware...).
-		// set response error status map
-		ErrorStatusMap(domain.ErrorStatusMap).
-		// add handlers
-		AddHandlers(dto.HandlersAdd...)
-
-}
 
 func RouterModule(config *RouterModuleConfig, handlers ...any) fx.Option {
 	var opts []fx.Option
