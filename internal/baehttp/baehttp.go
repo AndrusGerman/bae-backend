@@ -1,6 +1,10 @@
 package baehttp
 
-import "github.com/gin-gonic/gin"
+import (
+	"log/slog"
+
+	"github.com/gin-gonic/gin"
+)
 
 type Bae struct {
 	core           *gin.Engine
@@ -23,7 +27,7 @@ func (baeHttp *Bae) ErrorStatusMap(errorStatusMap map[error]int) *Bae {
 func (baeHttp *Bae) Use(middleware ...IMiddleware) *Bae {
 	var middlewaresGin = make([]gin.HandlerFunc, len(middleware))
 	for i := range middleware {
-		middlewaresGin[i] = middleware[i].getGinMiddleware()
+		middlewaresGin[i] = middleware[i].toGin()
 	}
 	baeHttp.core.Use(middlewaresGin...)
 	return baeHttp
@@ -39,15 +43,39 @@ func (baeHttp *Bae) Serve(listenAddr string) error {
 
 func (baeHttp *Bae) AddHandlers(handlers ...Handler) *Bae {
 	for i := range handlers {
-		baeHttp.AddHandler(handlers[i])
+		baeHttp.AddHandler(
+			NewHandlerAdd(handlers[i]),
+		)
 	}
 	return baeHttp
 }
 
-func (baeHttp *Bae) AddHandler(handler Handler) *Bae {
+func (baeHttp *Bae) AddHandler(handlerAdd IHandlerAdd) *Bae {
+	var handler = handlerAdd.GetHandler()
 	var config = handler.Config()
-	baeHttp.core.Handle(config.GetMethod(), config.GetPattern(), func(ctx *gin.Context) {
-		handler.Handler(baeHttp.NewContextHandler(ctx))
-	})
+	var middlewares = handlerAdd.GetMiddlewares()
+
+	var ginHandler = baeHttp.newGinHandler(handler, middlewares)
+	baeHttp.core.Handle(config.GetMethod(), config.GetPattern(), ginHandler)
 	return baeHttp
+}
+
+func (baeHttp *Bae) newGinHandler(handler Handler, middlewares []IMiddleware) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		var err error
+		for i := range middlewares {
+			var baeContext = baeHttp.NewContextHandler(ctx)
+			err = middlewares[i].Handler(baeContext)
+			if err != nil {
+				slog.Info("middleware error")
+				return
+			}
+			if !baeContext.IsNext() {
+				slog.Info("middleware is stop")
+				return
+			}
+		}
+
+		handler.Handler(baeHttp.NewContextHandler(ctx))
+	}
 }

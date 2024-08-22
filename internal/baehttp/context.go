@@ -11,6 +11,9 @@ type Context interface {
 	HandleSuccess(data any) error
 	HandleError(err error) error
 	Param(paramName string) Param
+	getGin() *gin.Context
+	Next()
+	IsNext() bool
 }
 
 var _ Context = (*ContextHandler)(nil)
@@ -22,10 +25,23 @@ func NewContextHandler(ctx *gin.Context, baeHttp *Bae) Context {
 type ContextHandler struct {
 	ginCtx  *gin.Context
 	baeHttp *Bae
+	next    bool
 }
 
 func (ctx *ContextHandler) BindJSON(obj any) error {
 	return ctx.ginCtx.ShouldBindJSON(obj)
+}
+
+func (ctx *ContextHandler) getGin() *gin.Context {
+	return ctx.ginCtx
+}
+
+func (ctx *ContextHandler) IsNext() bool {
+	return ctx.next
+}
+
+func (ctx *ContextHandler) Next() {
+	ctx.next = true
 }
 
 func (ctx *ContextHandler) HandleSuccess(data any) error {

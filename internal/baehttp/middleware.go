@@ -6,21 +6,27 @@ import (
 )
 
 type IMiddleware interface {
-	getGinMiddleware() gin.HandlerFunc
+	HandlerBase
+	toGin() gin.HandlerFunc
 }
 
 func NewGinMiddleware(ginMiddleware gin.HandlerFunc) IMiddleware {
 	return &GinMiddleware{
-		ginMiddleware: ginMiddleware,
+		base: ginMiddleware,
 	}
 }
 
 type GinMiddleware struct {
-	ginMiddleware gin.HandlerFunc
+	base gin.HandlerFunc
 }
 
-func (ctx *GinMiddleware) getGinMiddleware() gin.HandlerFunc {
-	return ctx.ginMiddleware
+func (gm *GinMiddleware) Handler(ctx Context) error {
+	gm.base(ctx.getGin())
+	return nil
+}
+
+func (gm *GinMiddleware) toGin() gin.HandlerFunc {
+	return gm.base
 }
 
 // Cors

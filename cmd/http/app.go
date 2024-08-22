@@ -5,6 +5,7 @@ import (
 	"bae-backend/internal/adapter/handler/http"
 	"bae-backend/internal/adapter/handler/http/hcountry"
 	"bae-backend/internal/adapter/handler/http/huser"
+	"bae-backend/internal/adapter/handler/http/middleware"
 	"bae-backend/internal/adapter/storage/mongodb"
 	"bae-backend/internal/adapter/storage/mongodb/repository"
 	"bae-backend/internal/baehttp"
@@ -17,22 +18,27 @@ import (
 )
 
 func main() {
+	var coreApp = fx.Provide(
+		config.New,
+		mongodb.New,
+		repository.NewUserRepository,
+		service.NewUserService,
+		service.NewCountryService,
+		baehttp.NewBae,
+	)
+
+	var globalHttpMiddleware = http.GlobalMiddlewaresModule(
+		fx.Supply(&baehttp.CorsConfig{AllowAllOrigins: true}),
+		baehttp.Cors,
+		baehttp.Recovery,
+	)
+
 	fx.New(
-		//fx.NopLogger,
-		fx.Provide(
-			config.New,
-			mongodb.New,
-			repository.NewUserRepository,
-			service.NewUserService,
-			service.NewCountryService,
-			baehttp.NewBae,
-		),
-		http.MiddlewaresModule(
-			fx.Supply(&baehttp.CorsConfig{AllowAllOrigins: true}),
-			baehttp.Cors,
-			baehttp.Recovery,
-		),
+		fx.NopLogger,
+		coreApp,
+		globalHttpMiddleware,
 		http.RouterModule(
+			http.MiddlewareModule(middleware.NewAuthMiddleware),
 			huser.NewUserGetAllHandler,
 			huser.NewUserRegisterHandlerHandler,
 			huser.NewUserGetUserByIdPhoneHandler,
@@ -47,6 +53,7 @@ func main() {
 }
 
 func RunHttpServer(httpConfig *config.HTTP, baehttp *baehttp.Bae) {
+
 	listenAddr := fmt.Sprintf("%s:%s", httpConfig.URL, httpConfig.Port)
 	// Start server
 	slog.Info("Starting the HTTP server", "listen_address", listenAddr)
