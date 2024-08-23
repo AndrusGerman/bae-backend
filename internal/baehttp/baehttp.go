@@ -26,9 +26,10 @@ func (baeHttp *Bae) ErrorStatusMap(errorStatusMap map[error]int) *Bae {
 	return baeHttp
 }
 
-func (baeHttp *Bae) Use(middleware ...IMiddleware) *Bae {
+func (baeHttp *Bae) Use(middleware ...Middleware) *Bae {
 	var middlewaresGin = make([]gin.HandlerFunc, len(middleware))
 	for i := range middleware {
+		middleware[i].setBaeContext(baeHttp)
 		middlewaresGin[i] = middleware[i].toGin()
 	}
 	baeHttp.core.Use(middlewaresGin...)
@@ -79,7 +80,7 @@ func (baeHttp *Bae) AddHandler(handlerAdd IHandlerAdd) *Bae {
 	return baeHttp
 }
 
-func (baeHttp *Bae) newGinHandler(handler Handler, middlewares []IMiddleware) gin.HandlerFunc {
+func (baeHttp *Bae) newGinHandler(handler Handler, middlewares []Middleware) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		shouldReturn := baeHttp.runMiddlewares(middlewares, ctx)
 		if shouldReturn {
@@ -89,7 +90,7 @@ func (baeHttp *Bae) newGinHandler(handler Handler, middlewares []IMiddleware) gi
 	}
 }
 
-func (baeHttp *Bae) runMiddlewares(middlewares []IMiddleware, ctx *gin.Context) bool {
+func (baeHttp *Bae) runMiddlewares(middlewares []Middleware, ctx *gin.Context) bool {
 	for i := range middlewares {
 		var baeContext = baeHttp.NewContextHandler(ctx)
 		var err = middlewares[i].Handler(baeContext)

@@ -10,7 +10,7 @@ var _ HandlerConfig = (*HandlerBasicConfig)(nil)
 type HandlerBasicConfig struct {
 	Pattern     string
 	Method      string
-	Middlewares []IMiddleware
+	Middlewares []Middleware
 }
 
 func (hc *HandlerBasicConfig) GetPattern() string {

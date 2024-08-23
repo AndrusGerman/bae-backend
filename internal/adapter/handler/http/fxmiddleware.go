@@ -18,7 +18,7 @@ func GlobalMiddlewaresModule(fxInject fx.Option, middleware ...any) fx.Option {
 func AsMiddleware(f any, resultTag string) any {
 	return fx.Annotate(
 		f,
-		fx.As(new(baehttp.IMiddleware)),
+		fx.As(new(baehttp.Middleware)),
 		fx.ResultTags(resultTag),
 	)
 }

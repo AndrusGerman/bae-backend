@@ -40,7 +40,7 @@ func NewRouterAdd(routerConstructor any, middlewareTag string) fx.Option {
 		fx.Provide(
 			AsRoute(routerConstructor, handlerTag),
 			fx.Annotate(
-				func(handler baehttp.Handler, middlewares []baehttp.IMiddleware) baehttp.IHandlerAdd {
+				func(handler baehttp.Handler, middlewares []baehttp.Middleware) baehttp.IHandlerAdd {
 					return baehttp.NewHandlerAdd(handler, middlewares...)
 				},
 				fx.ResultTags(`group:"handlers_add"`),

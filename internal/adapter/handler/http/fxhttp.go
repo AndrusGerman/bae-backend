@@ -12,7 +12,7 @@ import (
 type CreateConfigDto struct {
 	fx.In
 	ErrorStatusMap baehttp.ErrorStatusMap
-	Middlewares    []baehttp.IMiddleware `group:"global_middleware"`
+	Middlewares    []baehttp.Middleware  `group:"global_middleware"`
 	AddHandlers    []baehttp.IHandlerAdd `group:"handlers_add"`
 	ConfigHttp     *config.HTTP
 }

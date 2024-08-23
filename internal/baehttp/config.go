@@ -6,7 +6,7 @@ type ErrorStatusMap map[error]int
 
 type Config struct {
 	Mode           domain.Env
-	Middleware     []IMiddleware
+	Middleware     []Middleware
 	ErrorStatusMap ErrorStatusMap
 	HandlesAdd     []IHandlerAdd
 }
@@ -24,7 +24,7 @@ func (config *Config) GetErrorStatusMap() ErrorStatusMap {
 	}
 	return config.ErrorStatusMap
 }
-func (config *Config) GetMiddleware() []IMiddleware {
+func (config *Config) GetMiddleware() []Middleware {
 	return config.Middleware
 }
 

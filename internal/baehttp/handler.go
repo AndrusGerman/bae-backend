@@ -14,22 +14,22 @@ type IHandlerConfig interface {
 
 type IHandlerAdd interface {
 	GetHandler() Handler
-	GetMiddlewares() []IMiddleware
+	GetMiddlewares() []Middleware
 }
 
 type HandlerAdd struct {
 	Handler     Handler
-	middlewares []IMiddleware
+	middlewares []Middleware
 }
 
-func NewHandlerAdd(handler Handler, middlewares ...IMiddleware) IHandlerAdd {
+func NewHandlerAdd(handler Handler, middlewares ...Middleware) IHandlerAdd {
 	return &HandlerAdd{
 		Handler:     handler,
 		middlewares: middlewares,
 	}
 }
 
-func (ha *HandlerAdd) GetMiddlewares() []IMiddleware {
+func (ha *HandlerAdd) GetMiddlewares() []Middleware {
 	return ha.middlewares
 }
 

@@ -5,12 +5,36 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type IMiddleware interface {
+type Middleware interface {
 	HandlerBase
 	toGin() gin.HandlerFunc
+	setBaeContext(bae *Bae)
 }
 
-func NewGinMiddleware(ginMiddleware gin.HandlerFunc) IMiddleware {
+func NewMiddleware(handlerBase HandlerBase) Middleware {
+	return &HandlerMiddleware{base: handlerBase}
+}
+
+type HandlerMiddleware struct {
+	base HandlerBase
+	bae  *Bae
+}
+
+func (hm *HandlerMiddleware) setBaeContext(bae *Bae) {
+	hm.bae = bae
+}
+
+func (hm *HandlerMiddleware) toGin() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		hm.base.Handler(NewContextHandler(ctx, hm.bae))
+	}
+}
+
+func (hm *HandlerMiddleware) Handler(ctx Context) error {
+	return hm.base.Handler(ctx)
+}
+
+func NewGinMiddleware(ginMiddleware gin.HandlerFunc) Middleware {
 	return &GinMiddleware{
 		base: ginMiddleware,
 	}
@@ -33,18 +57,20 @@ func (gm *GinMiddleware) toGin() gin.HandlerFunc {
 	return gm.base
 }
 
-// Cors
+func (gm *GinMiddleware) setBaeContext(bae *Bae) {}
+
+// Middlewares Globals
 type CorsConfig struct {
 	AllowAllOrigins bool
 }
 
-func Cors(config *CorsConfig) IMiddleware {
+func Cors(config *CorsConfig) Middleware {
 	var configCors = cors.DefaultConfig()
 	configCors.AllowAllOrigins = config.AllowAllOrigins
 	return NewGinMiddleware(cors.New(configCors))
 
 }
 
-func Recovery() IMiddleware {
+func Recovery() Middleware {
 	return NewGinMiddleware(gin.Recovery())
 }
