@@ -23,8 +23,8 @@ func baehttpModule() fx.Option {
 		http.NewRouterModuleConfig(),
 		huser.NewUserGetAllHandler,
 		huser.NewUserRegisterHandlerHandler,
-		huser.NewUserGetUserByIdPhoneHandler,
-		huser.NewUserGetUserByFullPhoneHandler,
+		huser.NewGetUserByIdPhoneHandler,
+		huser.NewGetUserByFullPhoneHandler,
 		hcountry.NewCountryGetAllHandler,
 		hcountry.NewCountryGetHandler,
 	)

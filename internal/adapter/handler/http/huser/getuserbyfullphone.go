@@ -11,8 +11,8 @@ type UserGetUserByFullPhoneHandler struct {
 	userService port.UserService
 }
 
-// NewUserGetUserByFullPhoneHandler creates a new UserGetUserByFullPhoneHandler instance
-func NewUserGetUserByFullPhoneHandler(userService port.UserService) baehttp.Handler {
+// NewGetUserByFullPhoneHandler creates a new UserGetUserByFullPhoneHandler instance
+func NewGetUserByFullPhoneHandler(userService port.UserService) baehttp.Handler {
 	return &UserGetUserByFullPhoneHandler{
 		userService: userService,
 	}
@@ -23,7 +23,6 @@ func (uh *UserGetUserByFullPhoneHandler) Config() baehttp.HandlerConfig {
 }
 
 func (uh *UserGetUserByFullPhoneHandler) Handler(ctx baehttp.Context) error {
-
 	var err error
 	var fullPhone = ctx.Param("fullPhone").String()
 

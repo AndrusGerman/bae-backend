@@ -28,3 +28,8 @@ type Message struct {
 	MessageType      MessageType    `json:"messageTypeId" bson:"messageTypeId"`
 	DateCreated      time.Time      `json:"dateCreated" bson:"dateCreated"`
 }
+
+type MessageWithUser struct {
+	Message `bson:",inline"`
+	User    *User `json:"fromUser" bson:"fromUser"`
+}

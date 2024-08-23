@@ -12,8 +12,8 @@ type UserGetUserByIdPhoneHandler struct {
 	userService port.UserService
 }
 
-// NewUserGetUserByIdPhoneHandler creates a new UserGetUserByIdPhoneHandler instance
-func NewUserGetUserByIdPhoneHandler(userService port.UserService) baehttp.Handler {
+// NewGetUserByIdPhoneHandler creates a new UserGetUserByIdPhoneHandler instance
+func NewGetUserByIdPhoneHandler(userService port.UserService) baehttp.Handler {
 	return &UserGetUserByIdPhoneHandler{
 		userService: userService,
 	}
