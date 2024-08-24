@@ -17,6 +17,7 @@ func main() {
 		repository.NewUserRepository,
 		service.NewUserService,
 		service.NewCountryService,
+		service.NewEventBusService,
 	)
 	var baeHttp = baehttpModule()
 

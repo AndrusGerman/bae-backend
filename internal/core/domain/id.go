@@ -1,16 +1,12 @@
 package domain
 
 import (
-	"encoding"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/bsontype"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
-
-var _ encoding.TextMarshaler = Id{}
-var _ encoding.TextUnmarshaler = &Id{}
 
 type Id struct {
 	value primitive.ObjectID
@@ -24,9 +20,7 @@ func NewId() Id {
 
 func NewIdFromHex(id string) (Id, error) {
 	var value, err = primitive.ObjectIDFromHex(id)
-	return Id{
-		value: value,
-	}, err
+	return Id{value: value}, err
 }
 
 func (id Id) Hex() string {
