@@ -2,6 +2,7 @@ package main
 
 import (
 	"bae-backend/internal/adapter/handler/http"
+	"bae-backend/internal/adapter/handler/http/hauth"
 	"bae-backend/internal/adapter/handler/http/hcountry"
 	"bae-backend/internal/adapter/handler/http/huser"
 	"bae-backend/internal/baehttp"
@@ -21,8 +22,9 @@ func baehttpModule() fx.Option {
 	// routes
 	var routes = http.RouterModule(
 		http.NewRouterModuleConfig(),
+		hauth.NewRegisterHandlerHandler,
+		hauth.NewLoginHandlerHandler,
 		huser.NewUserGetAllHandler,
-		huser.NewUserRegisterHandlerHandler,
 		huser.NewGetUserByIdPhoneHandler,
 		huser.NewGetUserByFullPhoneHandler,
 		hcountry.NewCountryGetAllHandler,

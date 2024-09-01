@@ -1,4 +1,4 @@
-package huser
+package hauth
 
 import (
 	"bae-backend/internal/baehttp"
@@ -8,18 +8,18 @@ import (
 )
 
 // UserHandler represents the HTTP handler for user-related requests
-type UserRegisterHandler struct {
+type RegisterHandler struct {
 	svc port.UserService
 }
 
 // NewUserHandler creates a new UserHandler instance
-func NewUserRegisterHandlerHandler(svc port.UserService) baehttp.Handler {
-	return &UserRegisterHandler{
+func NewRegisterHandlerHandler(svc port.UserService) baehttp.Handler {
+	return &RegisterHandler{
 		svc,
 	}
 }
 
-func (uh *UserRegisterHandler) Config() baehttp.HandlerConfig {
+func (uh *RegisterHandler) Config() baehttp.HandlerConfig {
 	return baehttp.NewHandlerConfig(http.MethodPost, base+"/register")
 }
 
@@ -30,7 +30,7 @@ type registerDtoRequest struct {
 	Country  domain.Country `json:"countryId" binding:"required"`
 }
 
-func (uh *UserRegisterHandler) Handler(ctx baehttp.Context) error {
+func (uh *RegisterHandler) Handler(ctx baehttp.Context) error {
 	var err error
 	var req = new(registerDtoRequest)
 	if err = ctx.BindJSON(req); err != nil {
