@@ -13,12 +13,14 @@ func NewEventBusService() port.EventBusService {
 	return &EventBusService{}
 }
 
-func (eb *EventBusService) Send(eventName domain.Event, data any) {
+func (eb *EventBusService) Publish(eventName domain.Event, data any) error {
 	for i := range eb.storeEvents[eventName] {
 		eb.storeEvents[eventName][i](data)
 	}
+	return nil
 }
 
-func (eb *EventBusService) Subscribe(eventName domain.Event, calback domain.EventCalback) {
-	eb.storeEvents[eventName] = append(eb.storeEvents[eventName], calback)
+func (eb *EventBusService) Subscribe(eventName domain.Event, handler domain.EventCalback) error {
+	eb.storeEvents[eventName] = append(eb.storeEvents[eventName], handler)
+	return nil
 }
